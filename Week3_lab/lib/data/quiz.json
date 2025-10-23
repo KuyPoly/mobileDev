@@ -1,0 +1,15 @@
+{
+  "questions": [
+    {
+      "title": "3 + 3 = ?",
+      "choices": ["2", "3", "6"],
+      "goodChoice": "6",
+      "points": 10
+    },
+    {
+      "title": "2 + 2 = ?",
+      "choices": ["2", "4", "5"],
+      "goodChoice": "4"
+    }
+  ]
+}
