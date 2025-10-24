@@ -1,30 +1,44 @@
+import 'dart:io';
 import 'domain/quiz.dart';
 import 'ui/quiz_console.dart';
 import 'data/quizRepository.dart';
 
 void main() {
+  const quizFilePath = 'D:\\y3t1\\mobile dev\\assignment\\Week3_lab\\lib\\data\\quiz.json';
+  final repo = QuizRepository(quizFilePath);
 
-  // List<Question> questions = [
-  //   Question(
-  //       title: "Capital of France?",
-  //       choices: ["Paris", "London", "Rome"],
-  //       goodChoice: "Paris",why it cannot fi
-  //       ),
-        
-  //   Question(
-  //       title: "2 + 2 = ?", 
-  //       choices: ["2", "4", "5"], 
-  //       goodChoice: "4",
-  //       point: 50),
-  // ];
+  final Map<String, int> scoreboard = {};
+  final List<Player> currentRunPlayers = [];
 
-  // Read quiz from JSON file
-  QuizRepository repository = QuizRepository('D:\\y3t1\\mobile dev\\assignment\\Week3_lab\\lib\\data\\quiz.json');
-  Quiz quiz = repository.readQuiz();
+  print('--- Welcome to the Quiz ---\n');
+  while (true) {
+    stdout.write('Your name: ');
+    String? name = stdin.readLineSync();
 
-  QuizConsole console = QuizConsole(quiz: quiz);
-  console.startQuiz();
+    if (name == null || name.trim().isEmpty) {
+      print('--- Quiz Finished ---');
+      break;
+    }
 
-  QuizRepository resultsRepo = QuizRepository('D:\\y3t1\\mobile dev\\assignment\\Week3_lab\\lib\\data\\quiz_result.json');
-  resultsRepo.writeQuiz(quiz);
+    Quiz fileQuiz = repo.readQuiz();
+    final List<Question> questions = fileQuiz.questions;
+
+    Player player = Player(name: name);
+    currentRunPlayers.add(player);
+
+    Quiz quiz = Quiz(players: currentRunPlayers, questions: questions);
+    
+    QuizConsole console = QuizConsole(quiz: quiz);
+    console.startQuiz(player);
+
+    try {
+      repo.writeQuiz(currentRunPlayers, questions);
+    } catch (e) {
+      print('Failed to save player answers: $e');
+    }
+
+    final int scoreInPoints = quiz.getScore(player);
+    scoreboard[player.name] = scoreInPoints;
+    console.printResult(player, scoreboard);
+  }
 }

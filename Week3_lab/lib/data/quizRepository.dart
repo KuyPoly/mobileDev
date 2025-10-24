@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
 import '../domain/quiz.dart';
 
 class QuizRepository {
@@ -7,41 +7,46 @@ class QuizRepository {
 
   QuizRepository(this.filePath);
 
-  // READ Quiz from JSON file
   Quiz readQuiz() {
-    final file = File(filePath);
-    final content = file.readAsStringSync();
-    Map<String, dynamic> data = jsonDecode(content);
+    try {
+      final file = File(filePath);
+      if (!file.existsSync()) {
+        throw Exception("File not found at: $filePath");
+      }
 
-    // Map JSON to domain objects
-    var questionsJson = data['questions'] as List;
-    var questions = questionsJson.map((q) {
-      return Question(
-        title: q['title'],
-        choices: List<String>.from(q['choices']),
-        goodChoice: q['goodChoice'],
-        point: q['points'] ?? 1,
-      );
-    }).toList();
-
-    return Quiz(questions: questions);
+      final content = file.readAsStringSync();
+      final data = jsonDecode(content);
+      return Quiz.fromJson(data);
+    } catch (e) {
+      print("Error: $e");
+      rethrow;
+    }
   }
+  
+  void writeQuiz(List<Player> players, List<Question> questions) {
+    try {
+      final outFile = File(filePath);
 
-  // Write Quiz to JSON file
-  void writeQuiz(Quiz quiz) {
-    // Convert Quiz to JSON format
-    Map<String, dynamic> quizResultJson = {
-      'questions': quiz.questions.map((q) => q.toJson()).toList(),
-      'players': quiz.players.map((p) => p.toJson()).toList(),
-    };
+      final scoringQuiz = Quiz(players: players, questions: questions);
 
-    final file = File(filePath);
+      final List<Map<String, dynamic>> playersJson = players.map((p) {
+        final map = p.toJson();
+        map['points'] = scoringQuiz.getScore(p);
+        map['percentage'] = scoringQuiz.getScoreInPercentage(p);
+        return map;
+      }).toList();
 
-    final encoder = JsonEncoder.withIndent('  ');
-    String prettyJson = encoder.convert(quizResultJson);
+      final Map<String, dynamic> data = {
+        'questions': questions.map((q) => q.toJson()).toList(),
+        'players': playersJson,
+      };
 
-    // Write to file
-    file.writeAsStringSync(prettyJson);
-    print('Quiz saved to $filePath');
+      final encoder = JsonEncoder.withIndent('  ');
+      final jsonString = encoder.convert(data);
+      outFile.writeAsStringSync(jsonString);
+    } catch (e) {
+      print("Error writing quiz to $filePath: $e");
+      rethrow;
+    }
   }
 }

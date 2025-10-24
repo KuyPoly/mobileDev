@@ -1,15 +1,64 @@
 {
   "questions": [
     {
+      "id": "4a0377fd-a561-49d1-9822-521f0bf1fa9d",
       "title": "3 + 3 = ?",
-      "choices": ["2", "3", "6"],
+      "choices": [
+        "2",
+        "3",
+        "6"
+      ],
       "goodChoice": "6",
       "points": 10
     },
     {
+      "id": "4a0fbd82-016c-4404-adf1-18175de30a03",
       "title": "2 + 2 = ?",
-      "choices": ["2", "4", "5"],
-      "goodChoice": "4"
+      "choices": [
+        "2",
+        "4",
+        "5"
+      ],
+      "goodChoice": "4",
+      "points": 1
+    }
+  ],
+  "players": [
+    {
+      "id": "7968a68d-b113-4eb5-8532-34ac9577bc0f",
+      "name": "ly",
+      "answers": [
+        {
+          "id": "6fc3a427-4214-4ca1-b59f-ea8223b3ec99",
+          "questionId": "4a0377fd-a561-49d1-9822-521f0bf1fa9d",
+          "answerChoice": "6"
+        },
+        {
+          "id": "9f031316-bba6-4727-9b66-d8b18540052d",
+          "questionId": "4a0fbd82-016c-4404-adf1-18175de30a03",
+          "answerChoice": "4"
+        }
+      ],
+      "points": 11,
+      "percentage": 100
+    },
+    {
+      "id": "33377e15-51d8-425b-a273-297577e7d9d8",
+      "name": "lyna",
+      "answers": [
+        {
+          "id": "f8eae357-4c4c-4d6e-9ee4-2f95cf9441ed",
+          "questionId": "4a0377fd-a561-49d1-9822-521f0bf1fa9d",
+          "answerChoice": "6"
+        },
+        {
+          "id": "b2ef7954-46a8-49b1-93c5-82fdd0463857",
+          "questionId": "4a0fbd82-016c-4404-adf1-18175de30a03",
+          "answerChoice": "5"
+        }
+      ],
+      "points": 10,
+      "percentage": 50
     }
   ]
 }

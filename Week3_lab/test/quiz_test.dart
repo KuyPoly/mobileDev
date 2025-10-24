@@ -1,82 +1,56 @@
-import 'dart:math';
-
-import 'package:test/test.dart';
 import 'package:my_first_project/domain/quiz.dart';
+import 'package:test/test.dart';
 
-main() {
-   // Create 2 questions and the quiz
-  Question q1 =
-      Question(title: "2+2", choices: ["1", "2", "4"], goodChoice: "4", point: 10);
+void main() {
+  Question q1 = Question(
+    title: "Capital of France?",
+    choices: ["Paris", "London", "Rome"],
+    goodChoice: "Paris",
+    point: 60,
+  );
+  Question q2 = Question(
+    title: "2 + 2 = ?",
+    choices: ["2", "4", "5"],
+    goodChoice: "4",
+    point: 40,
+  );
 
-  Question q2 =
-      Question(title: "2+3", choices: ["1", "2", "5"], goodChoice: "5", point: 50);
+  Player p1 = Player(name: 'pich');
+  Player p2 = Player(name: 'poy');
+  Player p3 = Player(name: 'pin');
 
-  Quiz quiz = Quiz(questions: [q1, q2]);
+  Quiz quiz = Quiz(players: [p1, p2, p3], questions: [q1, q2]);
 
-  test('All answers are good (100%) (60 points)', () {
-    // Create the answer here
-    Answer a1 = Answer(question: q1, answerChoice: "4");
-    Answer a2 = Answer(question: q2, answerChoice: "5");
+  test('All answers correct (100%) answered by pich', () {
+    Answer a1 = Answer(question: q1, answerChoice: 'Paris');
+    Answer a2 = Answer(question: q2, answerChoice: '4');
 
-    quiz.answers = [a1, a2];
+    quiz.addAnswer(p1, a1);
+    quiz.addAnswer(p1, a2);
 
-    // Check something
-    expect(quiz.getScoreInPercentage(quiz.answers), equals(100));
-    expect(quiz.getPoint(quiz.answers), equals(60));
+    expect(quiz.getScoreInPercentage(p1), 100);
+    expect(quiz.getScore(p1), 100);
   });
 
-  test("Answer are 50% correct 50 points", () {
-    // Create the answer here
-    Answer a1 = Answer(question: q1, answerChoice: "1");
-    Answer a2 = Answer(question: q2, answerChoice: "5");
+  test('One answer wrong (50%) answered by poy', () {
+    Answer a1 = Answer(question: q1, answerChoice: 'Paris');
+    Answer a2 = Answer(question: q2, answerChoice: '5');
 
-    quiz.answers = [a1, a2];
+    quiz.addAnswer(p2, a1);
+    quiz.addAnswer(p2, a2);
 
-    // Check something
-    expect(quiz.getScoreInPercentage(quiz.answers), equals(50));
-    expect(quiz.getPoint(quiz.answers), equals(50));
+    expect(quiz.getScoreInPercentage(p2), 50);
+    expect(quiz.getScore(p2), 60);
   });
 
-  test("Answer are bad 0% 0 points", () {
-    // Create the answer here
-    Answer a1 = Answer(question: q1, answerChoice: "1");
-    Answer a2 = Answer(question: q2, answerChoice: "1");
+  test('All answers wrong (0%) answered by pin', () {
+    Answer a1 = Answer(question: q1, answerChoice: 'Rome');
+    Answer a2 = Answer(question: q2, answerChoice: '5');
 
-    quiz.answers = [a1, a2];
+    quiz.addAnswer(p3, a1);
+    quiz.addAnswer(p3, a2);
 
-    // Check something
-    expect(quiz.getScoreInPercentage(quiz.answers), equals(0));
-    expect(quiz.getPoint(quiz.answers), equals(0));
-  });
-
-  test("Player scores are 100% correct", (){
-    Player p1 = Player(name: "Rat");
-    Player p2 = Player(name: "Hello");
-
-    quiz.addPlayer(p1);
-    quiz.addPlayer(p2);
-
-    // Player 1 answers
-    List<Answer> p1Answers = [
-      Answer(question: q1, answerChoice: "4"),
-      Answer(question: q2, answerChoice: "5")
-    ];
-    p1.score = quiz.getScoreInPercentage(p1Answers);
-    p1.point = quiz.getPoint(p1Answers);
-
-    // Player 2 answers
-    List<Answer> p2Answers = [
-      Answer(question: q1, answerChoice: "1"),
-      Answer(question: q2, answerChoice: "5")
-    ];
-    p2.score = quiz.getScoreInPercentage(p2Answers);
-    p2.point = quiz.getPoint(p2Answers);
-
-    // Check players scores
-    expect(p1.score, equals(100));
-    expect(p1.point, equals(60));
-
-    expect(p2.score, equals(50));
-    expect(p2.point, equals(50));
+    expect(quiz.getScoreInPercentage(p3), 0);
+    expect(quiz.getScore(p3), 0);
   });
 }
